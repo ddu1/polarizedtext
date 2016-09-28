@@ -1,9 +1,9 @@
 # PolarizedText: 
 
-PolarizedText is a library based upon fastText for vector embedding of word. 
+PolarizedText is a library based upon fastText for vector embedding of words. 
 In addition to the skipgram model with negative sampling, a polarization term is introduced. This is in particular helpful for word similarity analysis like anonymization.
 
-## Building fastText
+## Building polarizedtext
 
 To build
 
