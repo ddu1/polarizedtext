@@ -17,6 +17,8 @@
 #include "matrix.h"
 #include "utils.h"
 
+namespace fasttext {
+
 Vector::Vector(int64_t m) {
   m_ = m;
   data_ = new real[m];
@@ -35,6 +37,10 @@ Vector::Vector(int64_t m, const std::vector<int32_t>& lbs)
 
 Vector::~Vector() {
   delete[] data_;
+}
+
+int64_t Vector::size() const {
+  return m_;
 }
 
 void Vector::zero() {
@@ -64,7 +70,6 @@ void Vector::addRow(const Matrix& A, int64_t i) {
   }
 }
 
-
 void Vector::addRow(const Matrix& A, int64_t i, real a) {
   assert(i >= 0);
   assert(i < A.m_);
@@ -73,7 +78,6 @@ void Vector::addRow(const Matrix& A, int64_t i, real a) {
     data_[j] += a * A.data_[i * A.n_ + j];
   }
 }
-
 
 void Vector::print() const{
   for( int32_t i = 0; i < m_; ++i) {
@@ -120,4 +124,6 @@ std::ostream& operator<<(std::ostream& os, const Vector& v)
     os << v.data_[j] << ' ';
   }
   return os;
+}
+
 }

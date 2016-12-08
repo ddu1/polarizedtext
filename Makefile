@@ -1,4 +1,4 @@
-#
+
 # Copyright (c) 2016-present, Facebook, Inc.
 # All rights reserved.
 #
@@ -6,6 +6,8 @@
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 #
+
+# DDU 2016
 
 CXX = c++
 CXXFLAGS = -pthread -std=c++0x

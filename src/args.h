@@ -14,6 +14,10 @@
 #include <ostream>
 #include <string>
 
+namespace fasttext {
+
+//enum class model_name : int {cbow=1, sg, sup};
+//enum class loss_name : int {hs=1, ns, softmax};
 enum class model_name : int {cbow=1, sg, sup, pwv};
 enum class loss_name : int {hs=1, ns, softmax, polar};
 
@@ -29,6 +33,7 @@ class Args {
     int ws;
     int epoch;
     int minCount;
+    int minCountLabel;
     int neg;
     int wordNgrams;
     loss_name loss;
@@ -40,11 +45,14 @@ class Args {
     double t;
     std::string label;
     int verbose;
+    std::string pretrainedVectors;
 
     void parseArgs(int, char**);
     void printHelp();
     void save(std::ostream&);
     void load(std::istream&);
 };
+
+}
 
 #endif

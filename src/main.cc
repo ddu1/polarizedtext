@@ -1,12 +1,24 @@
-#include "fasttext.h"
+/**
+ * Copyright (c) 2016-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 #include <iostream>
+
+#include "fasttext.h"
+#include "args.h"
+
+using namespace fasttext;
 
 void printUsage() {
   std::cout
     << "usage: fasttext <command> <args>\n\n"
     << "The commands supported by fasttext are:\n\n"
     << "  supervised          train a supervised classifier\n"
-    << "  pwv                 train a polarized word vector model\n"
     << "  test                evaluate a supervised classifier\n"
     << "  predict             predict most likely labels\n"
     << "  predict-prob        predict most likely labels with probabilities\n"
@@ -20,7 +32,7 @@ void printTestUsage() {
   std::cout
     << "usage: fasttext test <model> <test-data> [<k>]\n\n"
     << "  <model>      model filename\n"
-    << "  <test-data>  test data filename\n"
+    << "  <test-data>  test data filename (if -, read from stdin)\n"
     << "  <k>          (optional; 1 by default) predict top k labels\n"
     << std::endl;
 }
@@ -29,7 +41,7 @@ void printPredictUsage() {
   std::cout
     << "usage: fasttext predict[-prob] <model> <test-data> [<k>]\n\n"
     << "  <model>      model filename\n"
-    << "  <test-data>  test data filename\n"
+    << "  <test-data>  test data filename (if -, read from stdin)\n"
     << "  <k>          (optional; 1 by default) predict top k labels\n"
     << std::endl;
 }
@@ -53,7 +65,18 @@ void test(int argc, char** argv) {
   }
   FastText fasttext;
   fasttext.loadModel(std::string(argv[2]));
-  fasttext.test(std::string(argv[3]), k);
+  std::string infile(argv[3]);
+  if (infile == "-") {
+    fasttext.test(std::cin, k);
+  } else {
+    std::ifstream ifs(infile);
+    if (!ifs.is_open()) {
+      std::cerr << "Test file cannot be opened!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    fasttext.test(ifs, k);
+    ifs.close();
+  }
   exit(0);
 }
 
@@ -70,7 +93,20 @@ void predict(int argc, char** argv) {
   bool print_prob = std::string(argv[1]) == "predict-prob";
   FastText fasttext;
   fasttext.loadModel(std::string(argv[2]));
-  fasttext.predict(std::string(argv[3]), k, print_prob);
+
+  std::string infile(argv[3]);
+  if (infile == "-") {
+    fasttext.predict(std::cin, k, print_prob);
+  } else {
+    std::ifstream ifs(infile);
+    if (!ifs.is_open()) {
+      std::cerr << "Input file cannot be opened!" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    fasttext.predict(ifs, k, print_prob);
+    ifs.close();
+  }
+
   exit(0);
 }
 
@@ -92,9 +128,7 @@ void train(int argc, char** argv) {
   fasttext.train(a);
 }
 
-
 int main(int argc, char** argv) {
-  utils::initTables();
   if (argc < 2) {
     printUsage();
     exit(EXIT_FAILURE);
@@ -112,6 +146,5 @@ int main(int argc, char** argv) {
     printUsage();
     exit(EXIT_FAILURE);
   }
-  utils::freeTables();
   return 0;
 }

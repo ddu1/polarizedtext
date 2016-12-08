@@ -16,6 +16,8 @@
 
 #include "real.h"
 
+namespace fasttext {
+
 class Matrix;
 
 class Vector {
@@ -25,22 +27,25 @@ class Vector {
     real* data_;
 
     explicit Vector(int64_t);
-    explicit Vector(int64_t, const std::vector<int32_t>&);
+    explicit Vector(int64_t, const std::vector<int32_t>&);    
     ~Vector();
 
     real& operator[](int64_t);
     const real& operator[](int64_t) const;
 
+    int64_t size() const;
     void zero();
-    void ones();
+    void ones();    
     void mul(real);
     void addRow(const Matrix&, int64_t);
     void addRow(const Matrix&, int64_t, real);
     void mul(const Matrix&, const Vector&);
-    void print() const;
+    void print() const;    
     int64_t argmax();
 };
 
 std::ostream& operator<<(std::ostream&, const Vector&);
+
+}
 
 #endif
